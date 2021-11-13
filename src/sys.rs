@@ -16,13 +16,12 @@
 
 use std::time::{SystemTime, UNIX_EPOCH};
 
-#[cfg(all(not(unix), not(windows)))]
+#[cfg(any(target_arch = "wasm32", target_env = "sgx", target_arch = "xtensa"))]
 #[path = "sys/stub.rs"]
 mod inner;
 
-// TODO ESP32 gets picked up here -- not sure what target_env it needs
-#[cfg(all(unix, not(target_arch = "wasm32"), not(target_env = "sgx"), not(target_env = "xtensa-esp32-idf")))]
-#[path = "sys/stub.rs"]
+#[cfg(all(unix, not(target_arch = "wasm32"), not(target_env = "sgx"), not(target_arch = "xtensa")))]
+#[path = "sys/unix.rs"]
 mod inner;
 
 #[cfg(all(windows, not(target_arch = "wasm32"), not(target_env = "sgx")))]
